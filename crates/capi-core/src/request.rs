@@ -4,7 +4,11 @@
 
 use serde::Deserialize;
 use serde::Serialize;
+use std::sync::atomic::AtomicU64;
+use std::sync::atomic::Ordering;
 
+use crate::packet::IntoPayload;
+use crate::packet::Packet;
 use crate::payload::Payload;
 
 // =============================================================================
@@ -43,6 +47,13 @@ pub enum RequestType {
 #[serde(transparent)]
 pub struct RequestID(u64);
 
+impl RequestID {
+  fn next() -> Self {
+    static NEXT: AtomicU64 = AtomicU64::new(1);
+    Self(NEXT.fetch_add(1, Ordering::SeqCst))
+  }
+}
+
 // =============================================================================
 // Request Packet
 // =============================================================================
@@ -56,6 +67,18 @@ pub struct RequestPacket {
 }
 
 impl RequestPacket {
+  /// Create a new `RequestPacket` from the given `payload`.
+  pub fn new<P>(payload: P) -> Self
+  where
+    P: Packet + IntoPayload,
+  {
+    Self {
+      command: P::REQ_TYPE,
+      request: RequestID::next(),
+      payload: payload.into_payload(),
+    }
+  }
+
   /// Get the type identifier of the request.
   #[inline]
   pub const fn command(&self) -> RequestType {
