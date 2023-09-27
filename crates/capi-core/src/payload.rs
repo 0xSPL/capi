@@ -21,6 +21,28 @@ impl Payload {
       inner: BTreeMap::new(),
     }
   }
+
+  /// Create a new `Payload` from a single key-value pair.
+  #[inline]
+  pub fn from_kv<K, V>(k: K, v: V) -> Self
+  where
+    K: Into<String>,
+    V: Into<Value>,
+  {
+    let mut this: Self = Self::new();
+    this.inner.insert(k.into(), v.into());
+    this
+  }
+
+  /// Add a new key-value pair to the payload.
+  #[inline]
+  pub fn insert<K, V>(&mut self, k: K, v: V)
+  where
+    K: Into<String>,
+    V: Into<Value>,
+  {
+    self.inner.insert(k.into(), v.into());
+  }
 }
 
 impl Default for Payload {
