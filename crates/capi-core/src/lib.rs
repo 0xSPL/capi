@@ -9,6 +9,7 @@ pub mod types;
 
 pub use self::event::EventPacket;
 pub use self::event::EventType;
+pub use self::packet::IntoPayload;
 pub use self::packet::Packet;
 pub use self::payload::Payload;
 pub use self::request::RequestID;
