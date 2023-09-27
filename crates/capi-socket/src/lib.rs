@@ -1,10 +1,17 @@
 //! WebSocket extensions for Blizzard Classic Chat API (CAPI).
 
-#![cfg_attr(feature = "channel", feature(async_fn_in_trait))]
-#![cfg_attr(feature = "channel", feature(return_position_impl_trait_in_trait))]
+#![feature(async_fn_in_trait)]
+#![feature(return_position_impl_trait_in_trait)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
-#[cfg(feature = "channel")]
-pub mod channel;
+#[macro_use]
+mod macros;
+
+feature! {
+  #[feature = "channel"]
+  pub mod channel;
+}
+
 pub mod socket;
 pub mod transport;
 

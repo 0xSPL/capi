@@ -1,29 +1,46 @@
-use capi_core::EventPacket;
-use capi_core::RequestID;
-use capi_core::RequestPacket;
-use capi_core::ResponsePacket;
-use futures_util::Sink;
-use futures_util::Stream;
 use std::error::Error;
 use std::future::Future;
+
+use self::private::Connection;
+
+// =============================================================================
+// Connection ("Sealed")
+// =============================================================================
+
+mod private {
+  use futures_util::Sink;
+  use futures_util::Stream;
+
+  pub trait Connection<T, U>: Sink<T> + Stream<Item = Result<T, U>> {}
+
+  impl<T, U, V> Connection<T, U> for V
+  where
+    V: Sink<T>,
+    V: Stream<Item = Result<T, U>>,
+  {}
+}
 
 // =============================================================================
 // Transport
 // =============================================================================
 
-pub trait Transport:
-  Sink<Self::Message> + Stream<Item = Self::Message> + Unpin + Send + 'static
-{
-  type Message: Send;
-  type EncodeError: Error + Send;
-  type DecodeError: Error + Send;
+pub trait Transport: Connection<Self::Message, Self::Invalid> + Unpin + Send + 'static {
+  type Message: Message;
+  type Invalid: Error + Send;
 
-  fn encode(packet: &RequestPacket) -> Result<Self::Message, Self::EncodeError>;
-  fn decode(packet: Self::Message) -> Result<ResponsePacket, Self::DecodeError>;
+  // Note: async fn in trait does not currently apply `Send` bound.
+  //
+  // https://blog.rust-lang.org/inside-rust/2022/11/17/async-fn-in-trait-nightly.html
+  fn shutdown(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + '_;
+}
 
-  fn event(packet: Self::Message) -> Result<EventPacket, Self::DecodeError>;
-  fn ident(packet: &Self::Message) -> Result<RequestID, Self::DecodeError>;
+// =============================================================================
+// Transport Message
+// =============================================================================
 
-  // https://blog.rust-lang.org/inside-rust/2022/11/17/async-fn-in-trait-nightly.html#workarounds-available-in-the-stable-compiler
-  fn close(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + '_;
+pub trait Message: Send + 'static {
+  type Error: Error + Send;
+
+  fn from_string(string: String) -> Self;
+  fn into_string(self) -> Result<String, Self::Error>;
 }

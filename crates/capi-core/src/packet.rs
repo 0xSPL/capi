@@ -18,9 +18,9 @@ pub trait Packet: private::Sealed {
   const EVT_TYPE: Option<EventType>;
 }
 
-pub trait IntoPayload: private::Sealed {
+pub trait IntoPayload: private::Sealed + Sized {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::new()
   }
 }
@@ -43,7 +43,7 @@ impl Packet for Authenticate<'_> {
 }
 
 impl IntoPayload for Authenticate<'_> {
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::from_kv("api_key", self.api_key)
   }
 }
@@ -101,7 +101,7 @@ impl Packet for ChatSendMessage<'_> {
 
 impl IntoPayload for ChatSendMessage<'_> {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::from_kv("message", self.message)
   }
 }
@@ -126,7 +126,7 @@ impl Packet for ChatSendWhisper<'_> {
 
 impl IntoPayload for ChatSendWhisper<'_> {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     let mut payload: Payload = Payload::new();
     payload.insert("message", self.message);
     payload.insert("user_id", self.user_id);
@@ -153,7 +153,7 @@ impl Packet for ChatBanUser {
 
 impl IntoPayload for ChatBanUser {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::from_kv("user_id", self.user_id)
   }
 }
@@ -177,7 +177,7 @@ impl Packet for ChatUnbanUser<'_> {
 
 impl IntoPayload for ChatUnbanUser<'_> {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::from_kv("toon_name", self.toon_name)
   }
 }
@@ -201,7 +201,7 @@ impl Packet for ChatSendEmote<'_> {
 
 impl IntoPayload for ChatSendEmote<'_> {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::from_kv("message", self.message)
   }
 }
@@ -225,7 +225,7 @@ impl Packet for ChatKickUser {
 
 impl IntoPayload for ChatKickUser {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::from_kv("user_id", self.user_id)
   }
 }
@@ -249,7 +249,7 @@ impl Packet for ChatSetModerator {
 
 impl IntoPayload for ChatSetModerator {
   #[inline]
-  fn into_payload(&self) -> Payload {
+  fn into_payload(self) -> Payload {
     Payload::from_kv("user_id", self.user_id)
   }
 }
