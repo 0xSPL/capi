@@ -63,6 +63,8 @@ impl Packet for ChatConnect {
   const EVT_TYPE: Option<EventType> = Some(EventType::Connect);
 }
 
+impl IntoPayload for ChatConnect {}
+
 // =============================================================================
 // ChatDisconnect
 // =============================================================================
@@ -77,6 +79,8 @@ impl Packet for ChatDisconnect {
   const RES_TYPE: ResponseType = ResponseType::Disconnect;
   const EVT_TYPE: Option<EventType> = Some(EventType::Disconnect);
 }
+
+impl IntoPayload for ChatDisconnect {}
 
 // =============================================================================
 // ChatSendMessage
