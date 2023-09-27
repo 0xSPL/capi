@@ -8,4 +8,5 @@ readme = "README.md"
 [workspace]
 members = [
   "crates/capi-core",
+  "crates/capi-socket",
 ]
