@@ -132,6 +132,7 @@ impl<T: Transport> Channel<T> {
   const BUFFER_CLIENT: usize = 0x20;
   const BUFFER_SERVER: usize = 0x20;
 
+  /// Create a new `Channel` from the given [`transport`][Transport].
   pub fn new(transport: T) -> Self
   where
     T::Error: Error + Send,
@@ -153,7 +154,7 @@ impl<T: Transport> Channel<T> {
     &self.task
   }
 
-  /// Waits for the websocket server task to finish.
+  /// Waits for the WebSocket server task to finish.
   ///
   /// # Note
   ///
@@ -167,24 +168,24 @@ impl<T: Transport> Channel<T> {
     }
   }
 
-  /// Gracefully stops the websocket server.
+  /// Gracefully stops the WebSocket server.
   #[inline]
   pub async fn stop(&self) -> Result<(), ChannelError> {
     self.push(Command::ShutdownExit).await
   }
 
-  /// Forcibly stops the websocket server.
+  /// Forcibly stops the WebSocket server.
   #[inline]
   pub async fn kill(&self) -> Result<(), ChannelError> {
     self.push(Command::ShutdownKill).await
   }
 
-  /// Returns a [`stream`][Stream] of [events][EventPacket].
+  /// Returns a [`stream`][Stream] of [`events`][EventPacket].
   pub fn event_stream(&mut self) -> impl Stream<Item = Result<EventPacket, ChannelError>> + '_ {
     (&mut self.recv).map(decode_message)
   }
 
-  /// Returns a vector of [events][EventPacket].
+  /// Returns a vector of [`events`][EventPacket].
   pub fn events(&mut self) -> Result<Vec<EventPacket>, ChannelError> {
     let mut events: Vec<EventPacket> = Vec::new();
 
@@ -346,7 +347,7 @@ where
           }
         }
       }
-      // Process websocket messages
+      // Process WebSocket messages
       Some(message) = srecv.next() => {
         let Ok(message) = message else {
           panic!("TODO");

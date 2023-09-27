@@ -10,3 +10,16 @@ members = [
   "crates/capi-core",
   "crates/capi-socket",
 ]
+
+[dependencies]
+capi-core = { version = "=0.1", path = "crates/capi-core" }
+capi-socket = { version = "=0.1", path = "crates/capi-socket" }
+
+[features]
+default = ["channel", "tungstenite"]
+
+# Enables tokio-based channel utilities.
+channel = ["capi-socket/channel"]
+
+# Enables tungstenite-based socket handler.
+tungstenite = ["capi-socket/tungstenite"]

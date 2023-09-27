@@ -18,7 +18,6 @@ pub mod transport;
 pub use self::socket::Socket;
 pub use self::socket::SocketExt;
 pub use self::socket::SocketResponse;
-pub use self::transport::*;
 
 /// The chat API connection endpoint.
 pub const ENDPOINT: &str = "wss://connect-bot.classic.blizzard.com/v1/rpc/chat";

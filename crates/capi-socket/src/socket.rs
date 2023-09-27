@@ -20,6 +20,9 @@ pub type SocketResponse<T> = Result<ResponsePacket, <T as Socket>::Error>;
 // Socket
 // =============================================================================
 
+/// Core trait required by all WebSocket implementations.
+///
+/// Auto-implements [`SocketExt`] for more convenient behaviour.
 pub trait Socket {
   type Error;
 
