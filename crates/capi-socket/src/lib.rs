@@ -1,7 +1,6 @@
 //! WebSocket extensions for Blizzard Classic Chat API (CAPI).
 
-#![feature(async_fn_in_trait)]
-#![feature(return_position_impl_trait_in_trait)]
+#![allow(async_fn_in_trait)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[macro_use]
