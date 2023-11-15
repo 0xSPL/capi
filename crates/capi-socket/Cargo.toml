@@ -25,7 +25,7 @@ features = ["std"]
 optional = true
 
 [dependencies.tokio]
-version = "1.33"
+version = "1.34"
 default-features = false
 features = ["macros", "rt", "sync"]
 optional = true
